@@ -1,5 +1,5 @@
 from typing import NewType
-from os import PathLike
+from pathlib import Path
 from dataclasses import dataclass
 
 # X11 window id
@@ -13,5 +13,5 @@ PageNumber = NewType("PageNumber", int)
 # reference to a specific page in a specific pdf
 @dataclass
 class Reference:
-    filename: PathLike
+    filepath: Path
     page: PageNumber

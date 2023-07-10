@@ -22,10 +22,12 @@ def get_metadata_pdf() -> Reference:
             text=True,
         )
         pid: ProcessId = ProcessId(int(res.stdout))
+    except OSError as e:
+        raise Exception("Please install `xdotool`.") from e
     except subprocess.CalledProcessError as e:
         raise Exception(
-            "Could not get currently focused window. Check that `xdotool` is installed."
-        ) from e
+            "Could not get current active window ID. Is a window focused right now?"
+        )
 
     try:
         res = subprocess.run(
@@ -33,12 +35,12 @@ def get_metadata_pdf() -> Reference:
         )
         # WM_CLASS(STRING) = "org.pwmt.zathura", "Zathura"
         wm_class: list[str] = [
-            i.strip('"') for i in res.stdout.split(" = ")[-1].split(", ")
+            i.strip('"\n') for i in res.stdout.split(" = ")[-1].split(", ")
         ]
+    except OSError as e:
+        raise Exception("Please install `xprop`.") from e
     except subprocess.CalledProcessError as e:
-        raise Exception(
-            "Could not get focused window class. Check that `xprop` is installed."
-        ) from e
+        raise Exception("Could not get focused window class.") from e
 
     match wm_class[0]:
         case "Zathura":
@@ -46,7 +48,9 @@ def get_metadata_pdf() -> Reference:
         case "org.pwmt.zathura":
             return get_metadata_zathura(pid)
         case _:
-            raise NotImplemented("Can not retrieve pdf data from this type of window.")
+            raise Exception(
+                f"Can not retrieve pdf data from this type of window {wm_class}."
+            )
 
 
 def get_metadata_zathura(pid: ProcessId) -> Reference:
@@ -66,6 +70,7 @@ def get_metadata_zathura(pid: ProcessId) -> Reference:
     obj = bus.get(f"org.pwmt.zathura.PID-{pid}", "/org/pwmt/zathura")
 
     filename: str = obj.filename
-    pagenumber: PageNumber = obj.pagenumber
+    # zathura returns 0-indexed pages
+    pagenumber: PageNumber = obj.pagenumber + 1
 
-    return Reference(filename=Path(filename), page=pagenumber)
+    return Reference(filepath=Path(filename), page=pagenumber)
