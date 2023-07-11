@@ -6,6 +6,7 @@ from enum import Enum, auto
 from os import environ
 from urllib.parse import urlencode
 import subprocess
+import pydbus
 
 
 class LinkFormat(Enum):
@@ -50,8 +51,16 @@ def copy_ref(ref: Reference, format: LinkFormat) -> None:
     clip_copy(link_txt)
 
 
+def notify(title:str, txt: str) -> None:
+    """Send a text notification."""
+    bus = pydbus.SessionBus()
+    notifs = bus.get(".Notifications")
+    notifs.Notify("instantref", 0, "dialog-information", title, txt, [], {}, 5000)
+
+
 if __name__ == "__main__":
     ref = get_metadata_pdf()
 
     format = LinkFormat.TYPST
     copy_ref(ref, format)
+    notify("Copied ref", f"{ref.filepath.name} p. {ref.page}")
