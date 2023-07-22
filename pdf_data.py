@@ -4,12 +4,12 @@ import pydbus
 import subprocess
 
 
-def get_metadata_pdf() -> Reference:
+def get_page_pdf() -> PDFPage:
     """Find current page of focused PDF reader window.
 
     Returns
     -------
-    `Reference` to the current page, or None if not found.
+    `PDFPage` reference to the current page.
     """
     try:
         res = subprocess.run(
@@ -44,16 +44,16 @@ def get_metadata_pdf() -> Reference:
 
     match wm_class[0]:
         case "Zathura":
-            return get_metadata_zathura(pid)
+            return get_page_zathura(pid)
         case "org.pwmt.zathura":
-            return get_metadata_zathura(pid)
+            return get_page_zathura(pid)
         case _:
             raise Exception(
                 f"Can not retrieve pdf data from this type of window {wm_class}."
             )
 
 
-def get_metadata_zathura(pid: ProcessId) -> Reference:
+def get_page_zathura(pid: ProcessId) -> PDFPage:
     """Given the PID of a Zathura instance, find which page of which file it's on.
 
     Parameters
@@ -63,7 +63,7 @@ def get_metadata_zathura(pid: ProcessId) -> Reference:
 
     Returns
     -------
-    `Reference` that the Zathura instance is currently on
+    `PDFPage` that the Zathura instance is currently on.
     """
 
     bus = pydbus.SessionBus()
@@ -73,4 +73,4 @@ def get_metadata_zathura(pid: ProcessId) -> Reference:
     # zathura returns 0-indexed pages
     pagenumber: PageNumber = obj.pagenumber + 1
 
-    return Reference(filepath=Path(filename), page=pagenumber)
+    return PDFPage(filepath=Path(filename), page=pagenumber)
