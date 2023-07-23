@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from pdf_data import get_page_pdf
+from pdf_data import get_page_pdf, get_section_pdf
 from datatypes import *
 from enum import Enum, auto
+from util import notify
 import subprocess
-import pydbus
 import argparse
 import formatter.typst as typst_fmt
 
@@ -32,21 +32,19 @@ def copy_ref(ref: Reference, format: LinkFormat) -> None:
     clip_copy(link_txt)
 
 
-def notify(title:str, txt: str) -> None:
-    """Send a text notification."""
-    bus = pydbus.SessionBus()
-    notifs = bus.get(".Notifications")
-    notifs.Notify("instantref", 0, "dialog-information", title, txt, [], {}, 5000)
-
-
 if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.section:
-        raise NotImplementedError("--section isn't implemented")
-
-    ref = get_page_pdf()
+        ref = get_section_pdf()
+    else:
+        ref = get_page_pdf()
 
     format = LinkFormat.TYPST
     copy_ref(ref, format)
-    notify("Copied ref", f"{ref.filepath.name} p. {ref.page}")
+
+    match ref:
+        case PDFPage():
+            notify("Copied ref", f"{ref.filepath.name} p. {ref.page}")
+        case PDFSection():
+            notify("Copied ref", f"{ref.filepath.name} sec. {ref.title}")

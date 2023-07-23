@@ -1,4 +1,5 @@
 import subprocess
+import pydbus
 from dataclasses import dataclass
 from typing import Optional
 
@@ -56,3 +57,10 @@ def rofi(entries: list[str], prompt: str="> ", fuzzy=True, extra_args=[]) -> Opt
         pass
 
     return ret
+
+
+def notify(title:str, txt: str) -> None:
+    """Send a text notification."""
+    bus = pydbus.SessionBus()
+    notifs = bus.get(".Notifications")
+    notifs.Notify("instantref", 0, "dialog-information", title, txt, [], {}, 5000)

@@ -1,15 +1,31 @@
 #!/usr/bin/env python3
 # pdfref:// URL handler
 
-import subprocess
 from urllib.parse import urlparse, parse_qs
 from sys import argv
-
-from datatypes import PageNumber
+from datatypes import *
+from typing import cast, Any
+from util import notify
+import subprocess
+import fitz
 
 url = urlparse(argv[1])
 query = parse_qs(url.query)
 
 page: PageNumber = PageNumber(int(query.get("page", ["0"])[0]))
+section: SectionTitle = SectionTitle(query.get("section", [])[0])
+
+if section != []:
+    with fitz.Document(url.path) as doc:
+        toc = [FitzBookmark(*x) for x in cast(Any, doc).get_toc()]
+        headers = [x for x in toc if x.title == section]
+        if headers == []:
+            notify("", f"Failed to find section '{section}': did the title change?")
+        else:
+            if len(headers) > 1:
+                notify("", f"Multiple sections '{section}' found: page might be incorrect")
+
+            page = headers[0].page
+
 
 subprocess.run(["zathura", "--page", str(page), url.path], text=True)

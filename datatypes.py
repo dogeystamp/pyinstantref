@@ -63,3 +63,10 @@ PDFReference = Union[PDFPage, PDFSection]
 # for now no other format is implemented
 # replace this with an union if that happens
 Reference = PDFReference
+
+# PyMuPDF type
+@dataclass
+class FitzBookmark:
+    level: int
+    title: SectionTitle
+    page: PageNumber

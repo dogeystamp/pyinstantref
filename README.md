@@ -3,7 +3,7 @@
 This is a Python rewrite of Gilles Castel's [Instant Reference](https://github.com/gillescastel/instant-reference) tool.
 (I was not a fan of needing NPM rather than the system package manager to install some dependencies.)
 
-pyinstantref allows you to copy a link to a specific page in a PDF with a single keybind in Zathura.
+pyinstantref allows you to copy a link to a specific page or header in a PDF with a single keybind in Zathura.
 You can then paste this reference in your notes and other documents.
 
 For now, it only works with my own [templates](https://github.com/dogeystamp/typst-templates) for [Typst](https://github.com/typst/typst),
@@ -50,7 +50,7 @@ This will make Ctrl-L copy a reference to the current page in Zathura.
 
 ## limitations
 
-Currently, the following features are missing:
+Currently, the following features are missing compared to Castel's version:
 - ArXiv support
 - LaTeX output
 - Support for other PDF readers (e.g. Evince)
@@ -58,3 +58,9 @@ Currently, the following features are missing:
 Feel free to send pull requests,
 although this project is primarily for my own usage
 and I can not make any guarantees.
+
+Also:
+- Section references are unreliable because titles might change,
+  and there might be sections with the same title.
+  Proper IDs for bookmarks are possible,
+  but not until Typst resolves [issue #1352](https://github.com/typst/typst/issues/1352).

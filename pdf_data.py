@@ -1,7 +1,24 @@
 from pathlib import Path
 from datatypes import *
+from typing import cast, Any
+from util import rofi
 import pydbus
 import subprocess
+import fitz
+
+
+def get_section_pdf() -> PDFSection:
+    page_ref: PDFPage = get_page_pdf()
+    with fitz.Document(page_ref.filepath) as doc:
+        toc = [FitzBookmark(*x) for x in cast(Any, doc).get_toc()]
+        page_headers = [x for x in toc if x.page == page_ref.page]
+
+        rofi_res = rofi([f"{x.title}" for x in page_headers], prompt="Select header: ")
+        if rofi_res is None or rofi_res.index is None:
+            raise RuntimeError("No header was selected.")
+        selected_header = page_headers[rofi_res.index]
+
+        return PDFSection(filepath=page_ref.filepath, title=selected_header.title)
 
 
 def get_page_pdf() -> PDFPage:
