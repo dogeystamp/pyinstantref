@@ -17,7 +17,9 @@ Package names will probably differ for other distros, especially with Python pac
 
 First, install the necessary packages:
     
-    sudo pacman -S xsel xdotool xorg-xprop python-pydbus
+    sudo pacman -S xsel xdotool xorg-xprop python-pydbus rofi
+
+(Rofi is needed for section references.)
 
 Then, clone this repo:
 
