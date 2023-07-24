@@ -46,9 +46,11 @@ or add the following to your `.config/zathura/zathurarc`:
     
 ```
 map <C-l> exec copy_ref
+map <C-g> exec "copy_ref --section"
 ```
 
-This will make Ctrl-L copy a reference to the current page in Zathura.
+This will make Ctrl-L copy a reference to the current page,
+and Ctrl-G copy a reference to a specific section in Zathura.
 
 ## limitations
 
