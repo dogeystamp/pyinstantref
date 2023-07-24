@@ -19,19 +19,21 @@ def format_pdf_link(ref: PDFReference) -> str:
         format_path = str(ref.filepath.absolute())
 
     params = {}
+    default_label = ""
 
     match ref:
         case PDFPage():
             params["page"] = ref.page
         case PDFSection():
             params["section"] = ref.title
+            default_label = ref.title
         case _ as obj:
             assert_never(obj)
 
     if relative:
-        return f'#lref("{format_path}?{urlencode(params)}", pdfref: true)[]'
+        return f'#lref("{format_path}?{urlencode(params)}", pdfref: true)[{default_label}]'
     else:
-        return f'#link("pdfref://{format_path}?{urlencode(params)}")[]'
+        return f'#link("pdfref://{format_path}?{urlencode(params)}")[{default_label}]'
 
 def ref(ref: Reference) -> str:
     """Formats a Reference."""
