@@ -11,6 +11,7 @@ ProcessId = NewType("ProcessId", int)
 @dataclass
 class _Reference:
     """Reference to a location within a file."""
+
     pass
 
 
@@ -63,6 +64,7 @@ PDFReference = Union[PDFPage, PDFSection]
 # for now no other format is implemented
 # replace this with an union if that happens
 Reference = PDFReference
+
 
 # PyMuPDF type
 @dataclass

@@ -3,6 +3,7 @@ import pydbus
 from dataclasses import dataclass
 from typing import Optional
 
+
 @dataclass
 class RofiResult:
     """Data returned from Rofi.
@@ -18,12 +19,15 @@ class RofiResult:
     custom_bind
         ID of custom bind used to select entry. None if no custom bind was used.
     """
+
     index: Optional[int]
     value: str
     custom_bind: Optional[int]
 
 
-def rofi(entries: list[str], prompt: str="> ", fuzzy=True, extra_args=[]) -> Optional[RofiResult]:
+def rofi(
+    entries: list[str], prompt: str = "> ", fuzzy=True, extra_args=[]
+) -> Optional[RofiResult]:
     """Start a Rofi prompt.
 
     Returns
@@ -39,8 +43,10 @@ def rofi(entries: list[str], prompt: str="> ", fuzzy=True, extra_args=[]) -> Opt
     args += extra_args
 
     ret = RofiResult(None, "", None)
-    
-    res = subprocess.run(args, input="\0".join(entries), stdout=subprocess.PIPE, text=True)
+
+    res = subprocess.run(
+        args, input="\0".join(entries), stdout=subprocess.PIPE, text=True
+    )
     match res.returncode:
         case 0:
             pass
@@ -59,7 +65,7 @@ def rofi(entries: list[str], prompt: str="> ", fuzzy=True, extra_args=[]) -> Opt
     return ret
 
 
-def notify(title:str, txt: str) -> None:
+def notify(title: str, txt: str) -> None:
     """Send a text notification."""
     bus = pydbus.SessionBus()
     notifs = bus.get(".Notifications")

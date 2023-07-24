@@ -4,6 +4,7 @@ from datatypes import PDFPage, PDFSection, PDFReference, Reference
 from typing import assert_never
 from pathlib import Path
 
+
 def format_pdf_link(ref: PDFReference) -> str:
     path_str = environ.get("TYPST_ROOT", None)
     if path_str is None:
@@ -31,9 +32,12 @@ def format_pdf_link(ref: PDFReference) -> str:
             assert_never(obj)
 
     if relative:
-        return f'#lref("{format_path}?{urlencode(params)}", pdfref: true)[{default_label}]'
+        return (
+            f'#lref("{format_path}?{urlencode(params)}", pdfref: true)[{default_label}]'
+        )
     else:
         return f'#link("pdfref://{format_path}?{urlencode(params)}")[{default_label}]'
+
 
 def ref(ref: Reference) -> str:
     """Formats a Reference."""
