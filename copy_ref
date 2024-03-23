@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from pdf_data import get_page_pdf, get_section_pdf
+from pdf_data import get_destination_pdf, get_page_pdf, get_section_pdf
 from datatypes import *
 from enum import Enum, auto
 from util import notify
@@ -9,7 +9,9 @@ import argparse
 import formatter.typst as typst_fmt
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--section", help="Copy reference to the section title instead of the page number.", action="store_true")
+dest_group = parser.add_mutually_exclusive_group()
+dest_group.add_argument("--section", help="Copy reference to the section title instead of the page number.", action="store_true")
+dest_group.add_argument("--destination", help="Copy reference to a named destination instead of the page number.", action="store_true")
 
 
 class LinkFormat(Enum):
@@ -37,6 +39,8 @@ if __name__ == "__main__":
 
     if args.section:
         ref = get_section_pdf()
+    elif args.destination:
+        ref = get_destination_pdf()
     else:
         ref = get_page_pdf()
 
@@ -48,3 +52,5 @@ if __name__ == "__main__":
             notify("Copied ref", f"{ref.filepath.name} p. {ref.page}")
         case PDFSection():
             notify("Copied ref", f"{ref.filepath.name} sec. {ref.title}")
+        case PDFDestination():
+            notify("Copied ref", f"{ref.filepath.name} {ref.name}")

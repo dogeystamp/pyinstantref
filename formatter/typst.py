@@ -1,6 +1,6 @@
 from os import environ
 from urllib.parse import urlencode
-from datatypes import PDFPage, PDFSection, PDFReference, Reference
+from datatypes import PDFDestination, PDFPage, PDFSection, PDFReference, Reference
 from typing import assert_never
 from pathlib import Path
 
@@ -28,6 +28,8 @@ def format_pdf_link(ref: PDFReference) -> str:
         case PDFSection():
             params["section"] = ref.title
             default_label = ref.title
+        case PDFDestination():
+            params["destination"] = ref.name
         case _ as obj:
             assert_never(obj)
 

@@ -47,10 +47,13 @@ or add the following to your `.config/zathura/zathurarc`:
 ```
 map <C-l> exec copy_ref
 map <C-g> exec "copy_ref --section"
+map <C-k> exec "copy_ref --destination"
 ```
 
 This will make Ctrl-L copy a reference to the current page,
-and Ctrl-G copy a reference to a specific section in Zathura.
+Ctrl-G copy a reference to a specific section title,
+and Ctrl-K copy a reference to a [named destination](https://tex.stackexchange.com/questions/213860/how-to-generate-a-named-destination-in-pdf).
+Destinations and sections will show up in a rofi menu for you to select.
 
 ## limitations
 
@@ -66,5 +69,5 @@ and I can not make any guarantees.
 Also:
 - Section references are unreliable because titles might change,
   and there might be sections with the same title.
-  Proper IDs for bookmarks are possible,
-  but not until Typst resolves [issue #1352](https://github.com/typst/typst/issues/1352).
+  Use named destinations for documents that you built yourself (e.g. using Typst, LaTeX), and page numbers for external documents.
+  Only use section title references if your type-setting system does not support named destinations.

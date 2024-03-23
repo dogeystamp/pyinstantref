@@ -1,4 +1,4 @@
-from typing import NewType, Union
+from typing import NewType, TypedDict, Union
 from pathlib import Path
 from dataclasses import dataclass
 
@@ -60,15 +60,33 @@ class PDFSection(_PDFReference):
     title: SectionTitle
 
 
-PDFReference = Union[PDFPage, PDFSection]
+@dataclass
+class PDFDestination(_PDFReference):
+    """Reference to a named destination in a PDF.
+
+    Attributes
+    ----------
+    name
+        Destination name.
+    """
+
+    name: str
+
+
+PDFReference = Union[PDFPage, PDFSection, PDFDestination]
 # for now no other format is implemented
 # replace this with an union if that happens
 Reference = PDFReference
 
 
-# PyMuPDF type
+# PyMuPDF types
 @dataclass
 class FitzBookmark:
     level: int
     title: SectionTitle
     page: PageNumber
+
+class FitzDestinations(TypedDict):
+    page: PageNumber
+    to: tuple[int, int]
+    zoom: float

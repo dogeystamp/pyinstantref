@@ -14,6 +14,7 @@ query = parse_qs(url.query)
 
 page: PageNumber = PageNumber(int(query.get("page", ["0"])[0]))
 section_list = query.get("section", [])
+destination_list = query.get("destination", [])
 
 if section_list != []:
     section: SectionTitle = SectionTitle(section_list[0])
@@ -25,8 +26,16 @@ if section_list != []:
         else:
             if len(headers) > 1:
                 notify("", f"Multiple sections '{section}' found: page might be incorrect")
-
             page = headers[0].page
+elif destination_list != []:
+    destination_name = destination_list[0]
+    with fitz.Document(url.path) as doc:
+        destinations = FitzDestinations(cast(Any, doc).resolve_names())
+        destination = destinations.get(destination_name)
+        if not destination:
+            notify("", f"Failed to find named destination '{destination_name}': did the document change?")
+        else:
+            page = destination["page"]+1
 
 
 subprocess.run(["zathura", "--page", str(page), url.path], text=True)

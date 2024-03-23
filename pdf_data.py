@@ -16,9 +16,23 @@ def get_section_pdf() -> PDFSection:
         rofi_res = rofi([f"{x.title}" for x in page_headers], prompt="Select header: ")
         if rofi_res is None or rofi_res.index is None:
             raise RuntimeError("No header was selected.")
-        selected_header = page_headers[rofi_res.index]
+        else:
+            selected_header = page_headers[rofi_res.index]
+            return PDFSection(filepath=page_ref.filepath, title=selected_header.title)
 
-        return PDFSection(filepath=page_ref.filepath, title=selected_header.title)
+
+def get_destination_pdf() -> PDFDestination:
+    page_ref: PDFPage = get_page_pdf()
+    with fitz.Document(page_ref.filepath) as doc:
+        destinations = cast(FitzDestinations, cast(Any, doc).resolve_names())
+        page_dests = {k: x for k, x in destinations.items() if cast(Any, x)["page"]+1 == page_ref.page}
+
+        rofi_res = rofi([f"{k}" for k, _ in page_dests.items()], prompt="Select named destination: ")
+        if rofi_res is None or rofi_res.index is None:
+            raise RuntimeError("No destination was selected.")
+        else:
+            selected_header = [x for x in page_dests.items()][rofi_res.index]
+            return PDFDestination(filepath=page_ref.filepath, name=selected_header[0])
 
 
 def get_page_pdf() -> PDFPage:
