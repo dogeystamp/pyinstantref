@@ -25,9 +25,15 @@ def get_destination_pdf() -> PDFDestination:
     page_ref: PDFPage = get_page_pdf()
     with fitz.Document(page_ref.filepath) as doc:
         destinations = cast(FitzDestinations, cast(Any, doc).resolve_names())
-        page_dests = {k: x for k, x in destinations.items() if cast(Any, x)["page"]+1 == page_ref.page}
+        page_dests = {
+            k: x
+            for k, x in destinations.items()
+            if cast(Any, x)["page"] + 1 == page_ref.page
+        }
 
-        rofi_res = rofi([f"{k}" for k, _ in page_dests.items()], prompt="Select named destination: ")
+        rofi_res = rofi(
+            [f"{k}" for k, _ in page_dests.items()], prompt="Select named destination: "
+        )
         if rofi_res is None or rofi_res.index is None:
             raise RuntimeError("No destination was selected.")
         else:

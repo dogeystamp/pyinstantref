@@ -86,6 +86,7 @@ class FitzBookmark:
     title: SectionTitle
     page: PageNumber
 
+
 class FitzDestinations(TypedDict):
     page: PageNumber
     to: tuple[int, int]
