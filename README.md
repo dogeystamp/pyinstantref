@@ -1,5 +1,5 @@
 > [!WARNING]
-> I no longer use nor maintain this tool. Consider referencing within instead of between documents, because intra-document links are better-supported.
+> I no longer use nor maintain this tool. Consider referencing within instead of between documents, because intra-document links are better supported.
 
 # pyinstantref
 
